@@ -25,7 +25,6 @@
 // 基本こことトリガーを設定すれば動くと思う。
 var postchannel = {
   webhooks: '', // webhookのURL
-  // webhooks: "", // テスト環境
   icon : '', // iconの設定(必要なければコメントアウトしてください)
   channel: '' // youtubeチャンネルのID
 }
@@ -46,8 +45,14 @@ var postchannel = {
 以下の``if``構文の数値を``1``にして実行しましょう。
 
 ```通知チャンネル(42行目)
-// 時間内であれば実行する
-if (discordsystem.nowdata(posttime) === 0){ // 実行テストの場合は「0」ではなく「1」にして実行してください。
+// 本番環境
+if (discordsystem.nowdata(posttime) === 0){
+    var url = `${youtubeurl}${data.id.videoId}`;
+    // var icon = data.snippet.thumbnails.default.url;
+    console.log(url);
+
+// 実行テスト
+if (discordsystem.nowdata(posttime) === 1){ 
     var url = `${youtubeurl}${data.id.videoId}`;
     // var icon = data.snippet.thumbnails.default.url;
     console.log(url);
