@@ -1,0 +1,75 @@
+/* データセットの出力イメージ	ここから取りたい情報を取れる
+[ { etag: '4Z7PlSSvVIMfpKfjUKmDWqbxs4k',
+    id: { kind: 'youtube#video', videoId: 'DkZs165LKsM' },
+    snippet: 
+     { title: '【ブルアカ】エリ PV',
+       description: 'Yostarより好評配信中のアプリゲーム「ブルーアーカイブ」のエリのPVです。 公式サイト:https://bluearchive.jp/ ...',
+       publishedAt: '2025-08-21T09:00:28Z',
+       liveBroadcastContent: 'none',
+       channelTitle: 'ブルーアーカイブ-Blue Archive-',
+       thumbnails: [Object],
+       channelId: 'UCmgf8DJrAXFnU7j3u0kklUQ',
+       publishTime: '2025-08-21T09:00:28Z' },
+    kind: 'youtube#searchResult' } ]
+ */
+// 基本こことトリガーを設定すれば動くと思う。
+var postchannel = {
+  webhooks: '', // webhookのURL
+  // webhooks: "", // テスト環境
+  icon : '', // iconの設定
+  channel: '' // youtubeチャンネルのID
+}
+
+// mainの関数
+async function getvideoset(){
+  const youtubeurl = "https://www.youtube.com/watch?v=";
+  console.log(postchannel.channel);
+
+  // youtubeのデータを持ってくる
+  var datas = await getYoutubeData(postchannel.channel,eventType="none");  // 配信のタイプ(none, upcoming,live)
+  var data = datas[0]; // 最初のデータを持ってくる
+  
+  console.log(data);
+  
+  if (!data){ 
+    return 1;
+  }
+  var posttime = { // nowdataに送るdir作り
+    post_time: data.snippet.publishedAt,
+    minutes:15
+  };
+  // 時間内であれば実行する
+  if (discordsystem.nowdata(posttime) === 0){ // 実行テストの場合は「0」ではなく「1」にして実行してください。
+    var url = `${youtubeurl}${data.id.videoId}`;
+    // var icon = data.snippet.thumbnails.default.url;
+    console.log(url);
+    var postData = { // ディスコードに送るデータ作り
+      username : data.snippet.channelTitle,
+      content : url,
+      avatar_url: postchannel.icon
+      
+    };
+
+    if (postData != null){
+      console.log(postData);
+      discordsystem.postDiscord(postchannel.webhooks,postData);
+    }
+  }
+}
+// youtubeAPIのデータ取得
+async function getYoutubeData(channel,eventType="none"){
+  var results = YouTube.Search.list('id,snippet',{
+    "maxResults":1, // 取得上限
+    "channelId": channel, // チャンネルID
+    "order":"date", // 並び替え
+    "type": "video", // 取得する種類(video, playlist,channel)
+    "eventType": eventType, // 配信のタイプ(none, upcoming,live)
+  });
+  console.log(results.items);
+  return results.items;
+}
+
+
+
+
+
