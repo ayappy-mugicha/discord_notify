@@ -55,4 +55,29 @@ if (discordsystem.nowdata(posttime) === 0){ // 実行テストの場合は「0�
 最初の実行注意が出てきます。
 最初は驚きますが、どんどん進んで実行してください。おそらく``discord``サーバに通知が来るはずです。
 
-以上
+# トリガーの設定
+トリガーの追加をしましょう。
+* ``実行する関数``は``getvideoset``
+* ``時間ベースのトリガーのタイプを選択``を``分タイマーベース``
+* ``時間の間隔を選択（時間）``を``15分``
+
+## トリガーが15分な理由
+``youtube API`` のリクエスト件数が、1日あたり10,000ユニットのクォータ制限があり
+``youtube``動画を1回取得につき、100クオーターを消費するので、15分に一回にしています。
+[youtube API](https://developers.google.com/youtube/v3/determine_quota_cost?hl=ja)
+
+# その他の機能
+初期設定では、動画を取得する設定になっていますが、動画配信のデータを取得するようにもできます。
+``getYoutubeData``の引数を``eventType="none"``から``eventType="live"``に変えることで、ライブ配信の通知をすることができます。
+```通知チャンネル(29行目)
+  // 動画の場合
+  var datas = await getYoutubeData(postchannel.channel,eventType="none");
+
+  // 配信の場合
+  var datas = await getYoutubeData(postchannel.channel,eventType="live");  
+```
+
+# 備考
+おすすめはライブ配信用のファイルを作ることをおすすめします。
+先程のクオータ制限の問題です。
+ファイルを別にすれば、トリガーを15分にして制限がかかることはありません。
