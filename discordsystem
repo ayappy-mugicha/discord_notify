@@ -1,0 +1,36 @@
+// 15分前までの時間を取得
+function nowdata(postdate){
+
+  var judge = 0; // 判定の初期化
+  const nowdate = new Date(); //現時刻取得(日本時間)
+  var overtime = new Date(nowdate  - (postdate.minutes * 60 * 1000)); // 15mの時間を取得(日本時間)
+  var posttime = new Date(Date.parse(postdate.post_time)); // post時間を取得(日本時間)
+
+  console.log(`nowdata: ${nowdate}`);
+  console.log(`overtime: ${overtime}`);
+  console.log(`posttime: ${posttime}`);
+  
+  if (posttime >= overtime && posttime <= nowdate) { // 15m>現時刻>posttimeの投稿のみ
+      
+      judge = 0; // true
+      console.log("time");
+      return judge;
+
+  }else { // false
+
+      judge = 1; 
+      console.log("time over");
+      return judge;
+  }
+}
+
+function postDiscord(webhook,postData){// discordの送信設定  
+  UrlFetchApp.fetch(webhook, {
+    "method": "POST", // メソッドはpost
+    "headers": { // jsonに伴う
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+      "payload": JSON.stringify(postData), // 送信
+  });
+}
