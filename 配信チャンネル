@@ -18,7 +18,7 @@ async function getvideoset(){
     return 1;
   }
 
-  if (data.snippet.liveBroadcastContent === 'live'){ // 時間内であれば実行する
+  if (data.snippet.liveBroadcastContent == 'live'){ // 時間内であれば実行する
     var url = `${youtubeurl}${data.id.videoId}`;
     // var icon = data.snippet.thumbnails.default.url; // iconが欲しければコメントを削除
     console.log(url);
