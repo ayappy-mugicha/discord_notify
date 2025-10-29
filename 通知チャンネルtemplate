@@ -1,6 +1,7 @@
 // 基本こことトリガーを設定すれば動くと思う。
 var postchannel = {
   webhooks: '', // webhookのURL
+  // webhooks: '', // テスト環境
   icon : '', // iconの設定(必要なければコメントアウトしてください)
   channel: '' // youtubeチャンネルのID
 }
@@ -21,19 +22,20 @@ async function getvideoset(){
   }
   var posttime = { // nowdataに送るdir作り
     post_time: data.snippet.publishedAt,
-    minutes:15
+    minutes:30000
   };
   // 時間内であれば実行する
   if (discordsystem.nowdata(posttime) === 0){ // 実行テストの場合は「0」ではなく「1」にして実行してください。
     var url = `${youtubeurl}${data.id.videoId}`;
     // var icon = data.snippet.thumbnails.default.url;
     console.log(url);
+    var staus = data.snippet.liveBroadcastContent == 'upcoming' ? "配信枠を立てました!!" : "新しい動画が投稿されました!!";
+
     var postData = { // ディスコードに送るデータ作り
-      username : data.snippet.channelTitle,
-      content : url,
-      avatar_url: postchannel.icon
-      
-    };
+    username : data.snippet.channelTitle,
+    avatar_url: postchannel.icon,
+      content : `**「${data.snippet.channelTitle}」が${staus}** \n ${url}`
+    }
 
     if (postData != null){
       console.log(postData);
