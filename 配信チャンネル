@@ -1,0 +1,54 @@
+// webhookとyoutube channel IDを入力
+var postchannel = {
+    webhooks: '',
+    // icon : '',
+    channel: '' // チャンネル
+  }
+async function getvideoset(){
+  const youtubeurl = "https://www.youtube.com/watch?v=";
+
+  console.log(postchannel);
+
+  var datas = await getYoutubeData(postchannel.channel,eventType="live"); // youtubeのデータを持ってくる
+  var data = datas[0]; // 最初のデータを持ってくる
+  console.log(`最新のデータ: ${data}`);
+  
+  if (!data){
+    console.warn("データがありませんでした");
+    return 1;
+  }
+
+  if (data.snippet.liveBroadcastContent === 'live'){ // 時間内であれば実行する
+    var url = `${youtubeurl}${data.id.videoId}`;
+    // var icon = data.snippet.thumbnails.default.url; // iconが欲しければコメントを削除
+    console.log(url);
+    var postData = { // ディスコードに送るデータ作り
+    username : data.snippet.channelTitle,
+    avatar_url: postchannel.icon,
+      content : `**「${data.snippet.channelTitle}」が配信中です!!** \n ${url}`
+    }
+
+    if (postData != null){
+      console.log(postData);
+      discordsystem.postDiscord(postchannel.webhooks,postData);
+    }
+
+  }else {
+    console.warn("ライブ配信は現在していません");
+    return 1;
+  }
+}
+
+async function getYoutubeData(channel,eventType="none"){
+  var results = YouTube.Search.list('id,snippet',{
+    "maxResults":1, // 取得上限
+    "channelId": channel, // チャンネルID
+    "order":"date", // 並び替え
+    "type": "video", // 取得する種類(video, playlist,channel)
+    "eventType": eventType, // 配信のタイプ(none, upcoming,live)
+  });
+  console.log(results.items);
+  return results.items;
+}
+
+
