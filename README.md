@@ -1,7 +1,3 @@
-これはGoogle Apps Script（GAS）を使った**DiscordへのYouTube動画通知システム**の導入ガイドですね。初学者の方がスムーズに進められるよう、全体を整理し、専門用語を補足する形で添削・再構成します。
-
------
-
 ## 🚀 DiscordへのYouTube動画通知システム導入ガイド（GAS利用）
 
 このガイドでは、Google Apps Script（GAS）を利用して、特定のYouTubeチャンネルに新しい動画が投稿された際に、Discordサーバーへ自動で通知を送るシステムの設定方法を説明します。
