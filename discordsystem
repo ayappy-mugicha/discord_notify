@@ -1,3 +1,4 @@
+
 // 15分前までの時間を取得
 function nowdata(postdate){
 
@@ -5,7 +6,6 @@ function nowdata(postdate){
   const nowdate = new Date(); //現時刻取得(日本時間)
   var overtime = new Date(nowdate  - (postdate.minutes * 60 * 1000)); // 15mの時間を取得(日本時間)
   var posttime = new Date(Date.parse(postdate.post_time)); // post時間を取得(日本時間)
-
   console.log(`nowdata: ${nowdate}`);
   console.log(`overtime: ${overtime}`);
   console.log(`posttime: ${posttime}`);
@@ -13,13 +13,13 @@ function nowdata(postdate){
   if (posttime >= overtime && posttime <= nowdate) { // 15m>現時刻>posttimeの投稿のみ
       
       judge = 0; // true
-      console.log("time");
+      console.log(`現時刻から${postdate.minutes}分以内の内容です`);
       return judge;
 
   }else { // false
 
       judge = 1; 
-      console.log("time over");
+      console.warn(`この内容は現時刻から${postdate.minutes}分以上経過しています`);
       return judge;
   }
 }
@@ -33,4 +33,26 @@ function postDiscord(webhook,postData){// discordの送信設定
     },
       "payload": JSON.stringify(postData), // 送信
   });
+  console.log(`送信内容:「${postData.content}」をdiscordに転送しました`);
+}
+
+// test送信
+function test() {
+  let webhooks= '';// webhookのURL
+
+  var payload = {
+      username : "テストです",
+      content : "これは、discordsystemのテストです",
+  };
+  var change_time = 40; //ここの数値を変えてnowdata関数がtrue falseともに動くことを確認してください。
+  const nowdate = new Date(); //現時刻取得(日本時間)
+  var overtime = new Date(nowdate  - (change_time * 60 * 1000));
+  data = {
+    minutes : 15, // minutes >= change_time ? ture : false
+    post_time : overtime
+  }
+  if (nowdata(data) == 0) {
+    postDiscord(webhooks,payload);
+  }
+  
 }
