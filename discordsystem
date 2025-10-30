@@ -1,4 +1,5 @@
 
+WEBHOOK= '';// testしたいときだけ値を入力してください
 // 15分前までの時間を取得
 function nowdata(postdate){
 
@@ -33,18 +34,17 @@ function postDiscord(webhook,postData){// discordの送信設定
     },
       "payload": JSON.stringify(postData), // 送信
   });
-  console.log(`送信内容:「${postData.content}」をdiscordに転送しました`);
+  console.log(`送信内容: \n「${postData.content}」\nをdiscordに転送しました`);
 }
 
 // test送信
 function test() {
-  let webhooks= '';// webhookのURL
 
   var payload = {
       username : "テストです",
       content : "これは、discordsystemのテストです",
   };
-  var change_time = 40; //ここの数値を変えてnowdata関数がtrue falseともに動くことを確認してください。
+  var change_time = 10; //ここの数値を変えてnowdata関数がtrue falseともに動くことを確認してください。
   const nowdate = new Date(); //現時刻取得(日本時間)
   var overtime = new Date(nowdate  - (change_time * 60 * 1000));
   data = {
@@ -52,7 +52,7 @@ function test() {
     post_time : overtime
   }
   if (nowdata(data) == 0) {
-    postDiscord(webhooks,payload);
+    postDiscord(WEBHOOK,payload);
   }
   
 }
