@@ -6,37 +6,40 @@ var postchannel = {
   }
 async function getvideoset(){
   const youtubeurl = "https://www.youtube.com/watch?v=";
-
-  console.log(postchannel);
-
   var datas = await getYoutubeData(postchannel.channel,eventType="live"); // youtubeのデータを持ってくる
-  var data = datas[0]; // 最初のデータを持ってくる
-  console.log(`最新のデータ: ${data}`);
-  
+  var data = datas[0]; // 最新のデータを持ってくる
+ 
   if (!data){
-    console.warn("データがありませんでした");
+    console.warn("データがありません");
     return 1;
   }
-
-  if (data.snippet.liveBroadcastContent == 'live'){ // 時間内であれば実行する
-    var url = `${youtubeurl}${data.id.videoId}`;
-    // var icon = data.snippet.thumbnails.default.url; // iconが欲しければコメントを削除
-    console.log(url);
-    var postData = { // ディスコードに送るデータ作り
+  console.log(`最新のデータ: ${data}`);
+  var videoId = data.id.videoId;
+  var videoitem = await liveStreaming(videoId); // 動画の詳細を取得
+  
+  console.log(videoitem);
+  var livedetails = { // discordsystem.nowdataに送るデータセットを作る
+    post_time : videoitem.actualStartTime, // 配信が始まった時刻
+    minutes : 30, // トリガーの分数に合わせてください
+  };
+  
+  console.log(`配信開始時刻: ${livedetails.post_time}`);
+  if (data.snippet.liveBroadcastContent !== 'live' && discordsystem.nowdata(livedetails) !== 0){ // 時間内かつステータスがliveであれば実行する
+    console.error("stausまたは判定時刻がtrueではありません");
+    return 1;
+  }
+  
+  var url = `${youtubeurl}${videoId}`; // urlに整形
+  // var icon = data.snippet.thumbnails.default.url; // iconが欲しければコメントを削除
+  console.log(url);
+  var postData = { // ディスコードに送るデータ作り
     username : data.snippet.channelTitle,
     avatar_url: postchannel.icon,
-      content : `**「${data.snippet.channelTitle}」が配信中です!!** \n ${url}`
-    }
-
-    if (postData != null){
-      console.log(postData);
-      discordsystem.postDiscord(postchannel.webhooks,postData);
-    }
-
-  }else {
-    console.warn("ライブ配信は現在していません");
-    return 1;
+    content : `**「${data.snippet.channelTitle}」が配信中です!!** \n ${url}`,
   }
+
+  console.log(postData);
+  discordsystem.postDiscord(postchannel.webhooks,postData);
 }
 
 async function getYoutubeData(channel,eventType="none"){
@@ -51,4 +54,13 @@ async function getYoutubeData(channel,eventType="none"){
   return results.items;
 }
 
+async function liveStreaming(videoId) {
+  var videodetails = YouTube.Videos.list('liveStreamingDetails, snippet', {
+    'id': videoId,
+  })
+  // console.log(videodetail);
+  var videodetail = videodetails.items[0].liveStreamingDetails;
+  console.log(videodetail);
+  return videodetail;
+}
 
