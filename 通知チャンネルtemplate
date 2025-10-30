@@ -22,7 +22,7 @@ async function getvideoset(){
   }
   var posttime = { // nowdataに送るdir作り
     post_time: data.snippet.publishedAt,
-    minutes:30000
+    minutes:15
   };
   // 時間内であれば実行する
   if (discordsystem.nowdata(posttime) === 0){ // 実行テストの場合は「0」ではなく「1」にして実行してください。
